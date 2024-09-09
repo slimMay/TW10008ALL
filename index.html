@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TW geo info</title>
+</head>
+<body>
+<!-- partial:index.partial.html -->
+<div id="main" style="width:800px; height:700px;"></div>
+<!-- partial -->
+<script type="text/javascript" src="https://fastly.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
+<script type="text/javascript" src="https://fastly.jsdelivr.net/npm/echarts@5.5.1/dist/echarts.min.js"></script>
+
+<script>
+  var chartDom = document.getElementById("main");
+  var myChart = echarts.init(chartDom);
+  var option;
+
+var uploadedDataURL = "./TW-10008.json";
+
+//geoCoordMap把所有可能出现的城市加到数组里面
+var geoCoordMap = {
+        '南投市':[120.65746239033382,23.918306745806863],
+        '埔里鎮':[120.96299516724646,23.972475912308166],
+        '草屯鎮':[120.68239806909169, 23.97554775727553],
+         '竹山鎮':[120.68290136724129, 23.754909136208695],
+         '集集鎮':[120.76999275803277,23.83477854661516],
+       '名間鄉':[120.66799312968051,23.854589389134183],
+        '鹿谷鄉':[120.78264790055535,23.7465361440954],
+        '中寮鄉':[120.7821575547225,23.904421865975845],
+       '魚池鄉':[120.9618435351015,23.869963004511526],
+         '國姓鄉':[120.8572019384131, 24.042318855174692],
+        '水里鄉':[120.85470973734378,23.807588992815397],
+         '信義鄉':[120.95659611793585,23.65602392798314],
+         '仁愛鄉':[121.11321846896226,24.042407210135554]
+};
+
+//2018年銷售
+var d1 = {
+   "南投市": 10,
+    "埔里鎮": 2,
+    '草屯鎮': 21,
+    "竹山鎮": 4,
+    '集集鎮': 7,
+     "名間鄉":7,
+    "鹿谷鄉":5,
+    "中寮鄉":2,
+    "魚池鄉": 1,
+    "國姓鄉": 3,
+    "水里鄉": 19,
+    "信義鄉": 1,
+    "仁愛鄉": 2
+};
+
+//2019年銷售
+var d2 = {
+  "南投市": 131,
+    "埔里鎮": 51,
+    '草屯鎮': 114,
+    "竹山鎮": 58,
+    '集集鎮': 104,
+     "名間鄉":66,
+    "鹿谷鄉":35,
+    "中寮鄉":59,
+    "魚池鄉": 28,
+    "國姓鄉": 68,
+    "水里鄉": 120,
+    "信義鄉": 24,
+    "仁愛鄉": 58
+};
+//2020年銷售
+var d3 = {
+   "南投市": 311,
+    "埔里鎮": 174,
+    '草屯鎮': 308,
+    "竹山鎮": 192,
+    '集集鎮': 304,
+     "名間鄉":194,
+    "鹿谷鄉":179,
+    "中寮鄉":191,
+    "魚池鄉": 130,
+    "國姓鄉": 189,
+    "水里鄉": 345,
+    "信義鄉": 139,
+    "仁愛鄉": 182
+};
+//2021年銷售
+var d4 = {
+    "南投市": 296,
+    "埔里鎮": 184,
+    '草屯鎮': 332,
+    "竹山鎮": 136,
+    '集集鎮': 327,
+     "名間鄉":208,
+    "鹿谷鄉":235,
+    "中寮鄉":200,
+    "魚池鄉": 142,
+    "國姓鄉": 191,
+    "水里鄉": 327,
+    "信義鄉": 154,
+    "仁愛鄉": 168
+};
+//2022年銷售
+var d5 = {
+    "南投市": 334,
+    "埔里鎮": 185,
+    '草屯鎮': 313,
+    "竹山鎮": 181,
+    '集集鎮': 379,
+     "名間鄉":231,
+    "鹿谷鄉":215,
+    "中寮鄉":183,
+    "魚池鄉": 145,
+    "國姓鄉": 205,
+    "水里鄉": 344,
+    "信義鄉": 166,
+    "仁愛鄉": 170   
+};
+//2023年銷售
+var d6 = {
+    "南投市": 365,
+    "埔里鎮": 213,
+    '草屯鎮': 352,
+    "竹山鎮": 187,
+    '集集鎮': 430,
+     "名間鄉":251,
+    "鹿谷鄉":226,
+    "中寮鄉":196,
+    "魚池鄉": 165,
+    "國姓鄉": 234,
+    "水里鄉": 364,
+    "信義鄉": 151,
+    "仁愛鄉": 193
+};
+//2024年銷售
+var d7 = {
+    "南投市": 352,
+    "埔里鎮": 204,
+    '草屯鎮': 331,
+    "竹山鎮": 168,
+    '集集鎮': 421,
+     "名間鄉":271,
+    "鹿谷鄉":231,
+    "中寮鄉":199,
+    "魚池鄉": 172,
+    "國姓鄉": 141,
+    "水里鄉": 365,
+    "信義鄉": 132,
+    "仁愛鄉": 205
+};
+
+var colors = [
+    ["#1DE9B6", "#F46E36", "#04B9FF", "#5DBD32", "#FFC809", "#FB95D5", "#BDA29A", "#6E7074", "#546570", "#C4CCD3"],
+    ["#37A2DA", "#67E0E3", "#32C5E9", "#9FE6B8", "#FFDB5C", "#FF9F7F", "#FB7293", "#E062AE", "#E690D1", "#E7BCF3", "#9D96F5", "#8378EA", "#8378EA"],
+    ["#DD6B66", "#759AA0", "#E69D87", "#8DC1A9", "#EA7E53", "#EEDD78", "#73A373", "#73B9BC", "#7289AB", "#91CA8C", "#F49F42"],
+];
+var colorIndex = 0;
+$(function() {
+    var year = ["2018", "2019", "2020", "2021", "2022", "2023","2024"];
+    var mapData = [
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        []
+    ];
+
+    /*柱子Y名称*/
+    var categoryData = [];
+    var barData = [];
+
+    for (var key in geoCoordMap) {
+        mapData[0].push({
+            "year": '2018',
+            "name": key,
+            "value": d1[key],
+        });
+        mapData[1].push({
+            "year": '2019',
+            "name": key,
+            "value": d2[key],
+        });
+        mapData[2].push({
+            "year": '2020',
+            "name": key,
+            "value": d3[key],
+        });
+        mapData[3].push({
+            "year": '2021',
+            "name": key,
+            "value": d4[key],
+        });
+        mapData[4].push({
+            "year": '2022',
+            "name": key,
+            "value": d5[key],
+        });
+        mapData[5].push({
+            "year": '2023',
+            "name": key,
+            "value": d6[key],
+        });
+          mapData[6].push({
+            "year": '2024',
+            "name": key,
+            "value": d7[key],
+        });
+    }
+
+    for (var i = 0; i < mapData.length; i++) {
+        mapData[i].sort(function sortNumber(a, b) {
+            return a.value - b.value
+        });
+        barData.push([]);
+        categoryData.push([]);
+        for (var j = 0; j < mapData[i].length; j++) {
+            barData[i].push(mapData[i][j].value);
+            categoryData[i].push(mapData[i][j].name);
+        }
+    }
+
+    $.getJSON(uploadedDataURL, function(geoJson) {
+
+        echarts.registerMap('TW', geoJson);
+        var convertData = function(data) {
+            var res = [];
+            for (var i = 0; i < data.length; i++) {
+                var geoCoord = geoCoordMap[data[i].name];
+                if (geoCoord) {
+                    res.push({
+                        name: data[i].name,
+                        value: geoCoord.concat(data[i].value)
+                    });
+                }
+            }
+            return res;
+        };
+        
+        optionXyMap01 = {
+            timeline: {
+                data: year,
+                axisType: 'category',
+                autoPlay: true,
+                playInterval: 3000,
+                left: '10%',
+                right: '10%',
+                bottom: '3%',
+                width: '80%',
+                label: {
+                    normal: {
+                        textStyle: {
+                            color: '#ddd'
+                        }
+                    },
+                    emphasis: {
+                        textStyle: {
+                            color: '#fff'
+                        }
+                    }
+                },
+                symbolSize: 10,
+                lineStyle: {
+                    color: '#555'
+                },
+                checkpointStyle: {
+                    borderColor: '#777',
+                    borderWidth: 2
+                },
+                controlStyle: {
+                    showNextBtn: true,
+                    showPrevBtn: true,
+                    normal: {
+                        color: '#666',
+                        borderColor: '#666'
+                    },
+                    emphasis: {
+                        color: '#aaa',
+                        borderColor: '#aaa'
+                    }
+                },
+
+            },
+            baseOption: {
+                animation: true,
+                animationDuration: 1000,
+                animationEasing: 'cubicInOut',
+                animationDurationUpdate: 1000,
+                animationEasingUpdate: 'cubicInOut',
+                grid: {
+                    right: '10%',  // 右側Bar的定位
+                    top: '15%',
+                    bottom: '10%',
+                    width: '20%'
+                },
+                tooltip: {
+                    trigger: 'axis', // hover触发器
+                    axisPointer: { // 坐标轴指示器，坐标轴触发有效
+                        type: 'shadow', // 默认为直线，可选为：'line' | 'shadow'
+                        shadowStyle: {
+                            color: 'rgba(150,150,150,0.1)' //hover颜色
+                        }
+                    }
+                },
+                geo: {
+                    show: true,
+                    map: 'TW',
+                    roam: true,
+                    zoom: 1,
+                    center: [121.26999275803277, 23.83477854661516],// 地圖左右偏移
+                   /*center: [113.83531246, 34.0267395887],*/
+                    label: {
+                        emphasis: {
+                            show: false
+                        }
+                    },
+                    itemStyle: {
+                        normal: {
+                            borderColor: 'rgba(147, 235, 248, 1)',
+                            borderWidth: 1,
+                            areaColor: {
+                                type: 'radial',
+                                x: 0.5,
+                                y: 0.5,
+                                r: 0.8,
+                                colorStops: [{
+                                    offset: 0,
+                                    color: 'rgba(147, 235, 248, 0)' // 0% 处的颜色
+                                }, {
+                                    offset: 1,
+                                    color: 'rgba(147, 235, 248, .2)' // 100% 处的颜色
+                                }],
+                                globalCoord: false // 缺省为 false
+                            },
+                            shadowColor: 'rgba(128, 217, 248, 1)',
+                            // shadowColor: 'rgba(255, 255, 255, 1)',
+                            shadowOffsetX: -2,
+                            shadowOffsetY: 2,
+                            shadowBlur: 10
+                        },
+                        emphasis: {
+                            areaColor: '#389BB7',
+                            borderWidth: 0
+                        }
+                    }
+                },
+            },
+            options: []
+
+        };
+
+        for (var n = 0; n < year.length; n++) {
+            optionXyMap01.options.push({
+                backgroundColor: '#000',
+                /*backgroundColor: '#013954',*/
+                title:
+                    [{
+                            text: '南投縣歷年銷售指數',
+                            left: '25%',
+                            top: '7%',
+                            textStyle: {
+                                color: '#fff',
+                                fontSize: 22
+                            }
+                        },
+                        {
+                            id: 'statistic',
+                            text: year[n] + "銷售統計",
+                            left: '65%',
+                            top: '8%',
+                            textStyle: {
+                                color: '#fff',
+                                fontSize: 22
+                            }
+                        }
+                    ],
+                xAxis: {
+                    type: 'value',
+                    scale: true,
+                    position: 'top',
+                    min: 0,
+                    boundaryGap: false,
+                    splitLine: {
+                        show: false
+                    },
+                    axisLine: {
+                        show: false
+                    },
+                    axisTick: {
+                        show: false
+                    },
+                    axisLabel: {
+                        margin: 2,
+                        textStyle: {
+                            color: '#aaa'
+                        }
+                    },
+                },
+                yAxis: {
+                    type: 'category',
+                    //  name: 'TOP 20',
+                    nameGap: 16,
+                    axisLine: {
+                        show: true,
+                        lineStyle: {
+                            color: '#ddd'
+                        }
+                    },
+                    axisTick: {
+                        show: false,
+                        lineStyle: {
+                            color: '#ddd'
+                        }
+                    },
+                    axisLabel: {
+                        interval: 0,
+                        textStyle: {
+                            color: '#ddd'
+                        }
+                    },
+                    data: categoryData[n]
+                },
+
+                series: [
+                    //地图
+                    {
+                        type: 'map',
+                        map: 'TW',
+                        geoIndex: 0,
+                        aspectScale: 0.75, //长宽比
+                        showLegendSymbol: false, // 存在legend时显示
+                        label: {
+                            normal: {
+                                show: false
+                            },
+                            emphasis: {
+                                show: false,
+                                textStyle: {
+                                    color: '#fff'
+                                }
+                            }
+                        },
+                        roam: true,
+                        itemStyle: {
+                            normal: {
+                                areaColor: '#031525',
+                                borderColor: '#FFFFFF',
+                            },
+                            emphasis: {
+                                areaColor: '#2B91B7'
+                            }
+                        },
+                        animation: false,
+                        data: mapData
+                    },
+                    //地图中闪烁的点
+                    {
+                        //  name: 'Top 5',
+                        type: 'effectScatter',
+                        coordinateSystem: 'geo',
+                        data: convertData(mapData[n].sort(function(a, b) {
+                            return b.value - a.value;
+                        }).slice(0, 20)),
+                        symbolSize: function(val) {
+                            return val[2] / 10;
+                        },
+                        showEffectOn: 'render',
+                        rippleEffect: {
+                            brushType: 'stroke'
+                        },
+                        hoverAnimation: true,
+                        label: {
+                            normal: {
+                                formatter: '{b}',
+                                position: 'right',
+                                show: true
+                            }
+                        },
+                        itemStyle: {
+                            normal: {
+                                color: colors[colorIndex][n],
+                                shadowBlur: 10,
+                                shadowColor: colors[colorIndex][n]
+                            }
+                        },
+                        zlevel: 1
+                    },
+                    //柱状图
+                    {
+                        zlevel: 1.5,
+                        type: 'bar',
+                        symbol: 'none',
+                        itemStyle: {
+                            normal: {
+                                color: colors[colorIndex][n]
+                            }
+                        },
+                        data: barData[n]
+                    }
+                ]
+            })
+        }
+        myChart.setOption(optionXyMap01);
+    });
+});
+
+</script>
+
+</body>
+</html>
+
